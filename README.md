@@ -1,7 +1,8 @@
 # GrapJs
 Is a simple graph library for Vanilla JavaScript. It is designed to be simple and easy to use. It is not intended to be a full-featured graph library, but rather a simple and easy-to-use library for creating and manipulating graphs.
 
-![graph](blob:null/b0e35148-1d8c-450e-8cf5-702cbe220287)
+![imagen](https://github.com/adesduende/GraphJS/assets/29408281/4c5b9ce7-cda6-42c9-914a-395dbd167999)
+
 ## Installation
 To install GrapJs, simply include the `grap.js` file in your project.
 
