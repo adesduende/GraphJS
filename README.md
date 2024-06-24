@@ -20,7 +20,7 @@ import { GraphVerticalBar } from 'Graph.js';
 const graph = new GraphVerticalBar("canvas");
 ```	
 
-Once you have created the graph, you can draw it by calling the `DrawGraph` method and passing the data you want to display.
+Once you have created the graph, you can draw it by calling the `DrawGraph` method and passing the data you want to display. For more information on the data format, see the documentation for the specific graph type you are using on :book: ![Documentation](https://github.com/adesduende/GraphJS/wiki)
 
 ```javascript	
 graph.DrawGraph(data)
