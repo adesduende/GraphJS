@@ -1,5 +1,5 @@
-import GrahpVerticalBar from "./GraphVerticalBar.js";
-import PieChart from "./PieChart.js";
+import GrahpVerticalBar from "./classes/GraphVerticalBar.js";
+import PieChart from "./classes/PieChart.js";
 
 
 export {GrahpVerticalBar, PieChart}
