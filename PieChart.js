@@ -10,6 +10,7 @@ export default class PieChart {
     canvasOffset = 0;
     border = 0;
     pieOffset = 0;
+    pieSpan = 0;
     showName = true;
     showValue = true;
 
@@ -18,15 +19,16 @@ export default class PieChart {
     textFamily = "Arial Black";
     textSize = 10;
     textSpan = 2;
+    textPosition = 50;
 
     constructor(canvasId) {
         this.#canvasCtx = document.getElementById(canvasId).getContext('2d');
         this.#canvasWidth = document.getElementById(canvasId).width;
         this.#canvasHeight = document.getElementById(canvasId).height;
         this.#centerPoint = { x: this.#canvasWidth/2, y: this.#canvasHeight/2 };
-        this.#radius = (this.#canvasWidth<this.#canvasHeight)?this.#canvasWidth/2:this.#canvasHeight/2;        
     }
-
+    ///DrawGraph
+    ///@param {Array} data: Array of data to draw the pie chart
     DrawGraph(data) {
         //Clear canvas and set background color
         this.#canvasCtx.clearRect(0, 0, this.#canvasWidth, this.#canvasHeight);
@@ -35,36 +37,50 @@ export default class PieChart {
 
         //Set font properties
         this.#canvasCtx.font = `${this.textSize}px ${this.textFamily}`;
+        this.#canvasCtx.textAlign = "center";
+        this.#canvasCtx.textBaseline = "middle";
 
-        //Get max value
-        const maxValue = this.#GetMaxValue(data);
+        //Set radius
+        this.#radius = ((this.#canvasWidth<this.#canvasHeight)?this.#canvasWidth/2:this.#canvasHeight/2)-this.canvasOffset;        
+
         //Get total value
         const totalValue = this.#GetTotalValue(data);
 
         //Set initial angle
-        let initAngle = 0;
+        const angleOffset = this.#DegreeToRadians(this.pieOffset);
+        const initAngle = this.#DegreeToRadians(45);
+        
         //Draw Pie for each element
+        let nextAngle = initAngle;
         data.forEach(element => {
-            const endAngle = initAngle + this.#GetProportionalAngle(element.value, totalValue);
-            this.#DrawPie(initAngle,endAngle,element.color);
-            initAngle = endAngle;
+            const endAngle = nextAngle + this.#GetProportionalAngle(element.value, totalValue);
+            this.#DrawPie(nextAngle,endAngle- angleOffset,element.color);
 
+            nextAngle = endAngle;
+
+        });
+
+        //Draw text for each element
+        nextAngle = initAngle;
+        data.forEach(element => {
+            const endAngle = nextAngle + this.#GetProportionalAngle(element.value, totalValue);
             //Draw name
             if(this.showName)
             {
-                const textAngle = initAngle - this.#GetProportionalAngle(element.value, totalValue)/2;
-                const x = this.#centerPoint.x + this.#radius/2 * Math.cos(textAngle);
-                const y = this.#centerPoint.y + this.#radius/2 * Math.sin(textAngle);
+                const textAngle = nextAngle + this.#GetProportionalAngle(element.value, totalValue)/2 - angleOffset;
+                const x = this.#centerPoint.x + (this.textPosition * this.#radius / 100) * Math.cos(textAngle);
+                const y = this.#centerPoint.y + (this.textPosition * this.#radius / 100) * Math.sin(textAngle);
                 this.#DrawText(x, y, element.name, this.foregroundColor);
             }
             if(this.showValue)
             {
                 const textDimension = this.#GetTextDimensions(element.value);
-                const textAngle = initAngle - this.#GetProportionalAngle(element.value, totalValue)/2;
-                const x = this.#centerPoint.x + this.#radius/2 * Math.cos(textAngle);
-                const y = this.#centerPoint.y + this.#radius/2 * Math.sin(textAngle) + textDimension.height + this.textSpan;
+                const textAngle = nextAngle + this.#GetProportionalAngle(element.value, totalValue)/2 - angleOffset;
+                const x = this.#centerPoint.x + (this.textPosition * this.#radius / 100) * Math.cos(textAngle);
+                const y = this.#centerPoint.y  + (this.textPosition * this.#radius / 100) * Math.sin(textAngle) + textDimension.height + this.textSpan;
                 this.#DrawText(x, y, element.value, this.foregroundColor);
             }
+            nextAngle = endAngle;
         });
     }
     ///DrawPie
@@ -74,11 +90,11 @@ export default class PieChart {
     #DrawPie(initAngle, endAngle, color) {
 
         //Set span pie
-        const textAngle = initAngle + (endAngle - initAngle)/2;
+        const spanAngle = initAngle + (endAngle - initAngle)/2;
 
-        const x = this.#centerPoint.x + this.pieOffset * Math.cos(textAngle);
-        const y = this.#centerPoint.y + this.pieOffset * Math.sin(textAngle);
-        const radius = this.#radius-this.canvasOffset;
+        const x = this.#centerPoint.x + this.pieSpan * Math.cos(spanAngle);
+        const y = this.#centerPoint.y + this.pieSpan * Math.sin(spanAngle);
+        const radius = this.#radius - this.pieOffset;
 
         this.#canvasCtx.save();
         this.#canvasCtx.fillStyle = color;
@@ -103,7 +119,7 @@ export default class PieChart {
     ///@param {number} maxValue: max value to calculate the angle
     ///@returns {number} angle in radians
     #GetProportionalAngle(value, totalValue) {
-        const proportionValue = (value / totalValue) * 360;
+        const proportionValue = ((value / totalValue) * 360);
         return this.#DegreeToRadians(proportionValue);
     }
     ///GetMaxValue
@@ -142,7 +158,6 @@ export default class PieChart {
         this.#canvasCtx.fillText(name, x, y);
         this.#canvasCtx.restore();
     }
-
     ///GetTextDimensions
     ///@param {string} text: text to get the dimensions
     ///@returns {object} width and height of the text
