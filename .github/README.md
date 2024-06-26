@@ -1,7 +1,9 @@
 # GrapJs
 Is a simple graph library for Vanilla JavaScript. It is designed to be simple and easy to use. It is not intended to be a full-featured graph library, but rather a simple and easy-to-use library for creating and manipulating graphs.
 
-![imagen](https://github.com/adesduende/GraphJS/assets/29408281/4c5b9ce7-cda6-42c9-914a-395dbd167999)
+![Bar Chart](https://github.com/adesduende/GraphJS/assets/29408281/4c5b9ce7-cda6-42c9-914a-395dbd167999)
+![Pie Chart](https://github.com/adesduende/GraphJS/assets/29408281/335ef196-2cba-41f3-8ec1-47d25e4e589d)
+
 
 ## Installation
 To install GrapJs, simply include the `grap.js` file in your project.
@@ -15,7 +17,7 @@ To create a new graph, simply import the class you want to use and create a new 
 
 
 ```javascript
-import { GraphVerticalBar } from 'Graph.js';
+import { GraphVerticalBar, PieChart } from 'Graph.js';
 
 const graph = new GraphVerticalBar("canvas");
 ```	
